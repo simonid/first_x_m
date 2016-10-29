@@ -30,7 +30,7 @@ u8 des_on       = 0                                    			   ; // DES加密标�
 void Key_TP_Task(void)                                             ;
 void display();
 void display2();
-#define LED0 PBout(5)// PB5
+#define LED0 PAout(5)// PB5
  
 /*void LED_Init(void)
 {
@@ -42,18 +42,19 @@ void display2();
     GPIO_Init(GPIOB, &GPIO_InitStructure);		
 	
 }*/
- u8 h1[9];//---定义为8时候最后字符出现乱码
+ u8 h1[8];//---定义为8时候最后字符出现乱码
    u8 h2[13]="Welcome Back";
    u8 shuzi[]={"0123456789abcdef"};
 	 
 void LED_Init(void)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
-	RCC_APB2PeriphClockCmd(	RCC_APB2Periph_GPIOB, ENABLE );
+	RCC_APB2PeriphClockCmd(	RCC_APB2Periph_GPIOA, ENABLE );
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 		
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;		 
-    GPIO_Init(GPIOB, &GPIO_InitStructure);		
+    GPIO_Init(GPIOA, &GPIO_InitStructure);	
+		GPIO_ResetBits(GPIOA,GPIO_Pin_5);
 	
 }
 int main(void)
@@ -116,7 +117,9 @@ LED_Init();
 			//do{LED0=1;status = PcdAnticoll(UID);}while(status!=MI_OK);
 			printf("slow\n");LED0=0;
 		}
-		if(PcdAnticoll(UID)==MI_ERR)   LED0=1;
+		if(PcdAnticoll(UID)==MI_ERR)   {LED0=1;}
+	else
+		LED0=0;
 			//LED0=0;
 		if(status2==MI_OK) 
 		{
@@ -178,7 +181,7 @@ printf("%s\n",h2);
    h1[5]=shuzi[UID[2]&0x0f];
    h1[6]=shuzi[(UID[3]&0xf0)>>4];//BCD码，再去找对应的数字
    h1[7]=shuzi[UID[3]&0x0f];
-   h1[8]='\n';
+   //h1[8]='\n';
   // OLED_Display_On();
    
   //OLED_ShowString(00,10,"Card:"); 
@@ -228,3 +231,18 @@ void display2(u8 *p)
 }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
